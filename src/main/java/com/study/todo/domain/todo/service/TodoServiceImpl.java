@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.study.todo.domain.comment.dto.response.CommentResponseDto;
+import com.study.todo.domain.comment.repository.CommentRepository;
 import com.study.todo.domain.todo.dto.request.CreateTodoRequestDto;
 import com.study.todo.domain.todo.dto.request.UpdateTodoRequestDto;
 import com.study.todo.domain.todo.dto.response.AllTodoResponseDto;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class TodoServiceImpl implements TodoService{
 
 	private final TodoRepository todoRepository;
+	private final CommentRepository commentRepository;
 
 	//생성
 	@Transactional
@@ -49,10 +52,24 @@ public class TodoServiceImpl implements TodoService{
 		Todo findTodo = todoRepository.findById(todoId)
 			.orElseThrow(()->new IllegalArgumentException("존재하지 않는 일정입니다."));
 
+		int commentCount = commentRepository.countCommentsByTodoId(todoId);
+
+		List<CommentResponseDto> commentList = findTodo.getCommentList().stream()
+			.map(comment -> new CommentResponseDto(
+				comment.getId(),
+				comment.getContent(),
+				comment.getParent() != null ? comment.getParent().getId() : null, // 대댓글이 있는 경우
+				comment.getCreatedAt(),
+				comment.getUpdatedAt()
+			))
+			.collect(Collectors.toList());
+
 		return ToDoResponseDto.builder()
 			.id(findTodo.getId())
 			.title(findTodo.getTitle())
 			.content(findTodo.getContent())
+			.countComment(commentCount)
+			.commentList(commentList)
 			.createdAt(findTodo.getCreatedAt())
 			.updatedAt(findTodo.getUpdatedAt())
 			.build();
@@ -64,12 +81,16 @@ public class TodoServiceImpl implements TodoService{
 		List<Todo> allTodos = todoRepository.findAll();
 
 		return allTodos.stream()
-			.map(todo -> AllTodoResponseDto.builder()
-				.id(todo.getId())
-				.title(todo.getTitle())
-				.createdAt(todo.getCreatedAt())
-				.updatedAt(todo.getUpdatedAt())
-				.build())
+			.map(todo -> {
+				int commentCount = commentRepository.countCommentsByTodoId(todo.getId());
+				return AllTodoResponseDto.builder()
+					.id(todo.getId())
+					.title(todo.getTitle())
+					.commentCount(commentCount)  // 댓글 수 포함
+					.createdAt(todo.getCreatedAt())
+					.updatedAt(todo.getUpdatedAt())
+					.build();
+			})
 			.collect(Collectors.toList());
 	}
 

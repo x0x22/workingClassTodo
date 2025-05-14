@@ -30,9 +30,9 @@ public class CommentController {
 
 	// 댓글 생성
 	@PostMapping
-	public ResponseEntity<CreateCommentResponseDto> createComment(@RequestBody @Valid
+	public ResponseEntity<CreateCommentResponseDto> createComment(@PathVariable Long todoId, @RequestBody @Valid
 		CreateCommentRequestDto dto){
-		CreateCommentResponseDto comment = commentService.createComment(dto);
+		CreateCommentResponseDto comment = commentService.createComment(todoId,dto);
 		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 

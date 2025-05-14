@@ -13,9 +13,11 @@ public class AllTodoResponseDto {
 
 	private final Long id;
 	private final String title;
+	private final int commentCount;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private final LocalDateTime createdAt;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private final LocalDateTime updatedAt;
+
 }

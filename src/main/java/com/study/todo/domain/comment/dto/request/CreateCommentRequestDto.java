@@ -8,8 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateCommentRequestDto {
 
-	private final Long todoId;
-
 	@NotBlank
 	private final String content;
 

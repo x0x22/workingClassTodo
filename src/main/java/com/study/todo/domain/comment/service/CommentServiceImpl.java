@@ -28,9 +28,9 @@ public class CommentServiceImpl implements CommentService{
 
 	@Transactional
 	@Override
-	public CreateCommentResponseDto createComment(CreateCommentRequestDto dto) {
+	public CreateCommentResponseDto createComment(Long todoId,CreateCommentRequestDto dto) {
 
-		Todo todo = todoRepository.findById(dto.getTodoId())
+		Todo todo = todoRepository.findById(todoId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다."));
 
 		Comment parent = null;
@@ -40,6 +40,10 @@ public class CommentServiceImpl implements CommentService{
 
 			if (parent.getParent() != null) {
 				throw new IllegalArgumentException("대댓글에 대댓글은 작성할 수 없습니다.");
+			}
+
+			if (!parent.getTodo().getId().equals(todoId)){
+				throw new IllegalArgumentException("다른 일정에 대댓글을 달 수 없습니다.");
 			}
 		}
 

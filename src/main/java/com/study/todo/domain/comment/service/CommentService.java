@@ -9,7 +9,7 @@ import com.study.todo.domain.comment.dto.response.UpdateCommentResponseDto;
 public interface CommentService {
 
 	// 생성
-	CreateCommentResponseDto createComment(CreateCommentRequestDto dto);
+	CreateCommentResponseDto createComment(Long todoId, CreateCommentRequestDto dto);
 
 	// 단건 조회(부모 댓글 포함)
 	CommentInfoResponseDto CommentInfo(Long id);
