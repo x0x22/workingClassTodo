@@ -17,4 +17,7 @@ public interface CommentService {
 	// 수정
 	UpdateCommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto dto);
 
+	// 댓글 삭제
+	void deleteComment(Long todoId,Long commentId);
+
 }

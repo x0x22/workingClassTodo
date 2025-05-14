@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.study.todo.domain.comment.dto.request.CreateCommentRequestDto;
 import com.study.todo.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.study.todo.domain.comment.dto.response.CommentInfoResponseDto;
-import com.study.todo.domain.comment.dto.response.CommentResponseDto;
 import com.study.todo.domain.comment.dto.response.CreateCommentResponseDto;
 import com.study.todo.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.study.todo.domain.comment.entity.Comment;
@@ -108,5 +107,13 @@ public class CommentServiceImpl implements CommentService{
 			.createdAt(updatedComment.getCreatedAt())
 			.updatedAt(updatedComment.getUpdatedAt())
 			.build();
+	}
+
+	@Transactional
+	@Override
+	public void deleteComment(Long todoId,Long commentId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(()-> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+		commentRepository.delete(comment);
 	}
 }
