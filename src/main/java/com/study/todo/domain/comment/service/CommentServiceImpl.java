@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.study.todo.domain.comment.dto.request.CreateCommentRequestDto;
+import com.study.todo.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.study.todo.domain.comment.dto.response.CommentInfoResponseDto;
 import com.study.todo.domain.comment.dto.response.CommentResponseDto;
 import com.study.todo.domain.comment.dto.response.CreateCommentResponseDto;
+import com.study.todo.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.study.todo.domain.comment.entity.Comment;
 import com.study.todo.domain.comment.repository.CommentRepository;
 import com.study.todo.domain.todo.entity.Todo;
@@ -87,5 +89,24 @@ public class CommentServiceImpl implements CommentService{
 			null,
 			replyDtos
 		);
+	}
+
+	@Transactional
+	@Override
+	public UpdateCommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto dto) {
+
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+		comment.updateComment(dto.getContent());
+
+		Comment updatedComment = commentRepository.save(comment);
+
+		return UpdateCommentResponseDto.builder()
+			.id(updatedComment.getId())
+			.content(updatedComment.getContent())
+			.createdAt(updatedComment.getCreatedAt())
+			.updatedAt(updatedComment.getUpdatedAt())
+			.build();
 	}
 }
