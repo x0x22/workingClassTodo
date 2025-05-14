@@ -12,8 +12,8 @@ import lombok.Getter;
 public class CreateCommentResponseDto {
 
 	private final Long id;
-	private String content;
-	private Long parentId;
+	private final String content;
+	private final Long parentId;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
